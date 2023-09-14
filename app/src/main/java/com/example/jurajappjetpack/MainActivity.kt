@@ -319,7 +319,7 @@ class MainActivity: ComponentActivity() {
 
     @Composable
     fun AnimationScreen(navController: NavController, sliderValue: Float) {
-        val maxRows = (2 * sliderValue).toInt()
+        val maxRows = ((2 * sliderValue).toInt() + 0.1).toInt()
         val circleSize = 38.dp
         val circleSpacing = 8.dp
         val rowSpacing = 50.dp
