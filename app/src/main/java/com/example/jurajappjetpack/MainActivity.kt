@@ -319,10 +319,10 @@ class MainActivity: ComponentActivity() {
 
     @Composable
     fun AnimationScreen(navController: NavController, sliderValue: Float) {
-        val maxRows = ((2 * sliderValue).toInt() + 0.1).toInt()
+        val maxRows = (2 * sliderValue).toInt()
         val circleSize = 38.dp
         val circleSpacing = 8.dp
-        val rowSpacing = 50.dp
+        val rowSpacing = 40.dp
 
         val colors = listOf(
             Color.Blue,
@@ -346,7 +346,7 @@ class MainActivity: ComponentActivity() {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    repeat(10) { columnIndex ->
+                    repeat(8) { columnIndex ->
                         val isFlickering = remember { mutableStateOf(false) }
                         val alpha by animateFloatAsState(
                             if (isFlickering.value) 1f else 0f,
