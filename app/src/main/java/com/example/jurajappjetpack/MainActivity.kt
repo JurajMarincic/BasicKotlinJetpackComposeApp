@@ -410,14 +410,14 @@ class MainActivity: ComponentActivity() {
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .paddingFromBaseline(bottom = 200.dp)
+                    .paddingFromBaseline(bottom = 100.dp)
             )
 
             Text(
                  text = "$numberOfOperations operations of addition, divison and multiplication have been executed!",
                  fontSize = 20.sp,
                  modifier = Modifier
-                     .paddingFromBaseline(bottom = 100.dp)
+                     .paddingFromBaseline(bottom = 50.dp)
             )
 
             Text(
