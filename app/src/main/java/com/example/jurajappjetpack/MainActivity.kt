@@ -410,7 +410,7 @@ class MainActivity: ComponentActivity() {
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .paddingFromBaseline(bottom = 100.dp)
+                    .paddingFromBaseline(bottom = 110.dp)
             )
 
             Text(
