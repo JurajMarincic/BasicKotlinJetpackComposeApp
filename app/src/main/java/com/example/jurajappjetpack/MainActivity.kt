@@ -164,12 +164,8 @@ class MainActivity: ComponentActivity() {
                             val sliderValue = backStackEntry.arguments?.getInt("sliderValue") ?: 0
                             DatabaseScreen(navController, sliderValue,userRepository)
                         }
-                        composable("Screen4/{sliderValue}",
-                            arguments = listOf(navArgument("sliderValue") { type = NavType.IntType })
-                        ) {
-                                backStackEntry ->
-                            val sliderValue = backStackEntry.arguments?.getInt("sliderValue") ?: 0
-                            FeaturesScreen(navController, sliderValue)
+                        composable("Screen4") {
+                            FeaturesScreen(navController)
                         }
                     }
                 }
@@ -186,6 +182,18 @@ class MainActivity: ComponentActivity() {
         Button(
             onClick = {
                 navController.navigate("Screen$destination/$sliderValue")
+            },
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(text = "Run $name test")
+        }
+    }
+
+    @Composable
+    fun MainScreenFeaturesButton(name: String, navController: NavController, destination: String) {
+        Button(
+            onClick = {
+                navController.navigate("Screen$destination")
             },
             modifier = Modifier.padding(16.dp)
         ) {
@@ -253,8 +261,17 @@ class MainActivity: ComponentActivity() {
                         steps = 3
                     )
                 }
-                MainScreenButton(categoriesList[index], navController, index.toString(), roundToNearestInt(initialValue))
-
+                if (categoriesList[index] == "Native Features") {
+                    MainScreenFeaturesButton(categoriesList[index], navController, index.toString())
+                }
+                else {
+                    MainScreenButton(
+                        categoriesList[index],
+                        navController,
+                        index.toString(),
+                        roundToNearestInt(initialValue)
+                    )
+                }
                 Divider(
                     color = Color.Black,
                     thickness = 3.dp,
@@ -578,7 +595,7 @@ class MainActivity: ComponentActivity() {
     }
 
     @Composable
-    fun FeaturesScreen(navController: NavController, sliderValue: Int) {
+    fun FeaturesScreen(navController: NavController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
