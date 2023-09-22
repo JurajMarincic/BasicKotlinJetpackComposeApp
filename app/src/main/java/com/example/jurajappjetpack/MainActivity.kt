@@ -137,38 +137,38 @@ class MainActivity: ComponentActivity() {
                         composable("mainScreen") { MyApp(navController) }
                         composable(
                             "Screen0/{sliderValue}",
-                            arguments = listOf(navArgument("sliderValue") { type = NavType.FloatType })
+                            arguments = listOf(navArgument("sliderValue") { type = NavType.IntType })
                         ) { backStackEntry ->
-                            val sliderValue = backStackEntry.arguments?.getFloat("sliderValue") ?: 0f
+                            val sliderValue = backStackEntry.arguments?.getInt("sliderValue") ?: 0
                             UIScreen(navController, sliderValue)
                         }
                         composable(
                             "Screen1/{sliderValue}",
-                            arguments = listOf(navArgument("sliderValue") { type = NavType.FloatType })
+                            arguments = listOf(navArgument("sliderValue") { type = NavType.IntType })
                         ) {
                                 backStackEntry ->
-                            val sliderValue = backStackEntry.arguments?.getFloat("sliderValue") ?: 0f
+                            val sliderValue = backStackEntry.arguments?.getInt("sliderValue") ?: 0
                             AnimationScreen(navController, sliderValue)
                         }
                         composable("Screen2/{sliderValue}",
-                            arguments = listOf(navArgument("sliderValue") { type = NavType.FloatType })
+                            arguments = listOf(navArgument("sliderValue") { type = NavType.IntType })
                         ) {
                                 backStackEntry ->
-                            val sliderValue = backStackEntry.arguments?.getFloat("sliderValue") ?: 0f
+                            val sliderValue = backStackEntry.arguments?.getInt("sliderValue") ?: 0
                             ArithmeticLogicalScreen(navController, sliderValue)
                         }
                         composable("Screen3/{sliderValue}",
-                            arguments = listOf(navArgument("sliderValue") { type = NavType.FloatType })
+                            arguments = listOf(navArgument("sliderValue") { type = NavType.IntType })
                         ) {
                                 backStackEntry ->
-                            val sliderValue = backStackEntry.arguments?.getFloat("sliderValue") ?: 0f
+                            val sliderValue = backStackEntry.arguments?.getInt("sliderValue") ?: 0
                             DatabaseScreen(navController, sliderValue,userRepository)
                         }
                         composable("Screen4/{sliderValue}",
-                            arguments = listOf(navArgument("sliderValue") { type = NavType.FloatType })
+                            arguments = listOf(navArgument("sliderValue") { type = NavType.IntType })
                         ) {
                                 backStackEntry ->
-                            val sliderValue = backStackEntry.arguments?.getFloat("sliderValue") ?: 0f
+                            val sliderValue = backStackEntry.arguments?.getInt("sliderValue") ?: 0
                             FeaturesScreen(navController, sliderValue)
                         }
                     }
@@ -182,7 +182,7 @@ class MainActivity: ComponentActivity() {
 
 
     @Composable
-    fun MainScreenButton(name: String, navController: NavController, destination: String, sliderValue: Float) {
+    fun MainScreenButton(name: String, navController: NavController, destination: String, sliderValue: Int) {
         Button(
             onClick = {
                 navController.navigate("Screen$destination/$sliderValue")
@@ -200,12 +200,22 @@ class MainActivity: ComponentActivity() {
             listOf(
                 "UI Scalability",
                 "Animation",
-                "Arithmetic and logical operations",
+                "Arithmetic and Logical Operations",
                 "SQLite Database",
-                "Native features"
+                "Native Features"
             )
 
         val sliderValues = remember { mutableStateMapOf<Int, Float>() }
+
+        fun roundToNearestInt(value: Float): Int {
+            return when {
+                value < 1.5f -> 1
+                value < 2.5f -> 2
+                value < 3.5f -> 3
+                value < 4.5f -> 4
+                else -> 5
+            }
+        }
 
         LazyColumn(
             modifier = Modifier
@@ -227,7 +237,7 @@ class MainActivity: ComponentActivity() {
 
                 if (index < 4) {
                     Text(
-                        text = initialValue.toString(),
+                        text = roundToNearestInt(initialValue).toString(),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -239,10 +249,11 @@ class MainActivity: ComponentActivity() {
                         onValueChange = { newValue ->
                             sliderValues[index] = newValue
                         },
-                        valueRange = 1f..5f
+                        valueRange = 1f..5f,
+                        steps = 3
                     )
                 }
-                MainScreenButton(categoriesList[index], navController, index.toString(), initialValue)
+                MainScreenButton(categoriesList[index], navController, index.toString(), roundToNearestInt(initialValue))
 
                 Divider(
                     color = Color.Black,
@@ -253,11 +264,17 @@ class MainActivity: ComponentActivity() {
         }
     }
 
+
+
+
+
+
+
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
     @Composable
-    fun UIScreen(navController: NavController, sliderValue: Float) {
-        val maxIterations = 2.0.pow(sliderValue.toDouble()).toInt()
+    fun UIScreen(navController: NavController, sliderValue: Int) {
 
+        val maxIterations = 2.0.pow(sliderValue.toDouble()).toInt()
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -318,8 +335,8 @@ class MainActivity: ComponentActivity() {
     }
 
     @Composable
-    fun AnimationScreen(navController: NavController, sliderValue: Float) {
-        val maxRows = (2 * sliderValue).toInt()
+    fun AnimationScreen(navController: NavController, sliderValue: Int) {
+        val maxRows = 2 * sliderValue
         val circleSize = 38.dp
         val circleSpacing = 8.dp
         val rowSpacing = 40.dp
@@ -388,10 +405,18 @@ class MainActivity: ComponentActivity() {
     }
 
     @Composable
-    fun ArithmeticLogicalScreen(navController: NavController, sliderValue: Float) {
-        Calculate(sliderValue)
-        val numberOfOperations = (sliderValue*sliderValue*sliderValue*10).toInt()
-        val executionTime = measureExecutionTime(sliderValue).toInt().toString()
+    fun ArithmeticLogicalScreen(navController: NavController, sliderValue: Int) {
+        var value = 0
+        val numberOfOperations = 10.0.pow(sliderValue.toDouble()).toInt() * 10000
+        val startTime = System.nanoTime()
+        for(i in 0 until numberOfOperations){
+            value += 2;
+            value /= 4;
+            value *= 2;
+        }
+        val endTime = System.nanoTime()
+        val executionTime = (endTime - startTime)/1000000
+
         Column(
 
 
@@ -421,7 +446,7 @@ class MainActivity: ComponentActivity() {
             )
 
             Text(
-                text = "Execution time lasted $executionTime nanoseconds.",
+                text = "Execution time lasted $executionTime miliseconds.",
                 fontSize = 15.sp,
                 modifier = Modifier
                     .paddingFromBaseline(bottom = 100.dp)
@@ -429,31 +454,12 @@ class MainActivity: ComponentActivity() {
         }
     }
 
-    fun Calculate(intensity: Float): Int{
-        val numberOfOperations = (intensity*10*intensity*intensity).toInt()
-        var value = 0
-        for(i in 0 until numberOfOperations){
-            value += 2;
-            value /= 4;
-            value *= 2;
-        }
-        return numberOfOperations
-    }
-
-    fun measureExecutionTime(intensity: Float): Long {
-        val startTime = System.nanoTime()
-        Calculate(intensity)
-        val endTime = System.nanoTime()
-        return endTime - startTime
-    }
-
     @Composable
     fun DatabaseScreen(
         navController: NavController,
-        sliderValue: Float,
+        sliderValue: Int,
         userRepository: UserRepository
     ) {
-        var userCount by remember { mutableStateOf(0) }
         var resultText by remember { mutableStateOf("") }
 
         Column(
@@ -484,18 +490,20 @@ class MainActivity: ComponentActivity() {
             Button(
                 onClick = {
                     CoroutineScope(Dispatchers.IO).launch {
+
+                        val userSize = 10.0.pow(sliderValue.toDouble()).toInt()
+
                         val startTime = System.nanoTime()
 
-                        for (i in 0 until (sliderValue * sliderValue * 10).toInt()) {
-                            val age = i % 17 + 1
-                            userRepository.insertUser(User(age = age))
+                        for (i in 0 until userSize) {
+                            userRepository.insertUser(User(age = i % 100))
                         }
 
                         val endTime = System.nanoTime()
-                        val duration = endTime - startTime
+                        val executionTime = (endTime - startTime)/1000000
 
                         withContext(Dispatchers.Main) {
-                            resultText = "Added users: ${(sliderValue * sliderValue * 10).toInt()} in $duration nanoseconds"
+                            resultText = "Added $userSize users in $executionTime miliseconds!"
                         }
                     }
                 }
@@ -509,7 +517,6 @@ class MainActivity: ComponentActivity() {
                 onClick = {
                     CoroutineScope(Dispatchers.IO).launch {
                     val count = userRepository.getAllUsers().size
-                    userCount = count
                     resultText = "Current user count: $count"
                 }
                 }
@@ -571,7 +578,7 @@ class MainActivity: ComponentActivity() {
     }
 
     @Composable
-    fun FeaturesScreen(navController: NavController, sliderValue: Float) {
+    fun FeaturesScreen(navController: NavController, sliderValue: Int) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
